@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Grocery Store Management</title>
+<style>
+body{font-family:Arial;max-width:500px;margin:auto;padding:15px}
+input,button{padding:10px;margin:4px 0;width:100%;box-sizing:border-box}
+button{background:#2e7d32;color:#fff;border:0}
+li{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #ccc}
+.low{color:red}
+</style>
+</head>
+<body>
+<h2>Grocery Store Management</h2>
+<input id="n" placeholder="Item name">
+<input id="q" type="number" placeholder="Quantity">
+<input id="p" type="number" placeholder="Price">
+<button onclick="add()">Add Item</button>
+<h3>Stock</h3>
+<ul id="list"></ul>
+<h3 id="total"></h3>
+<script>
+let items=JSON.parse(localStorage.getItem("g")||"[]");
+function add(){
+ let n=document.getElementById("n").value;
+ let q=+document.getElementById("q").value;
+ let p=+document.getElementById("p").value;
+ if(!n||!q||!p)return alert("Fill all fields");
+ items.push({n,q,p});save();
+}
+function del(i){items.splice(i,1);save();}
+function save(){localStorage.setItem("g",JSON.stringify(items));show();}
+function show(){
+ let l=document.getElementById("list");l.innerHTML="";
+ let t=0;
+ items.forEach((x,i)=>{
+  t+=x.q*x.p;
+  l.innerHTML+=`<li class="${x.q<5?'low':''}">${x.n} | Qty ${x.q} | ₹${x.p}
+  <button style="width:60px" onclick="del(${i})">X</button></li>`;
+ });
+ document.getElementById("total").innerText="Total stock value: ₹"+t;
+}
+show();
+</script>
+</body>
+</html>
